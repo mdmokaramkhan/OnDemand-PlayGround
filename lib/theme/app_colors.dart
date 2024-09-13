@@ -15,10 +15,10 @@ class AppColorsDark {
   static const Color primary = Color(0xFF004DEC);
   static const Color secondary = Color(0xFF020024);
   static const Color accent = Color(0xFFFFFFFF);
-  static const Color background = Color(0xFF1B1B1B);
+  static const Color background = Color(0xFF101014);
   static const Color textPrimary = Color(0xFFC3CEDE);
   static const Color hintColor = Color(0xFF8795A7);
-  static const Color disabledColor = Color(0xFF2B3034);
+  static const Color disabledColor = Color(0xFF25252D);
 }
 
 class StaticColors  {

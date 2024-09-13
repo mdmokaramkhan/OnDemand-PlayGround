@@ -1,7 +1,11 @@
+import 'package:chatbot/providers/theme_provider.dart';
 import 'package:chatbot/utils/constants.dart';
 import 'package:chatbot/utils/sizes.dart';
+import 'package:chatbot/widgets/cards.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -43,133 +47,87 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(AppSizes.paddingLarge),
-            child: Wrap(
-              runSpacing: 10,
-              spacing: 10,
-              alignment: WrapAlignment.spaceEvenly,
-              crossAxisAlignment: WrapCrossAlignment.end,
+            child: Column(
               children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
-                  onTap: () {
-                    debugPrint('tapped');
-                  },
-                  child: Container(
-                    height: 140,
-                    width: MediaQuery.of(context).size.width * 0.275,
-                    padding: const EdgeInsets.all(AppSizes.gapMedium),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).hoverColor,
-                      border: Border.all(
-                        color: Theme.of(context).dividerColor.withOpacity(0.1),
-                      ),
-                      borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
+                const Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  alignment: WrapAlignment.spaceEvenly,
+                  crossAxisAlignment: WrapCrossAlignment.end,
+                  children: [
+                    FeatureCard(
+                      desc: 'Porgram',
+                      title: 'Coding',
+                      svgAssetPath: 'assets/icons/code.svg',
+                      iconColor: Colors.deepOrange,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.deepOrange[50],
-                          child: SvgPicture.asset(
-                            'assets/icons/code.svg',
-                            // ignore: deprecated_member_use
-                            color: Colors.deepOrange,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          'Porgram',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        Text(
-                          'Coding',
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                      ],
+                    FeatureCard(
+                      desc: 'Content',
+                      title: 'Writing',
+                      svgAssetPath: 'assets/icons/paper.svg',
+                      iconColor: Colors.blue,
                     ),
-                  ),
+                    FeatureCard(
+                      desc: 'Assignment',
+                      title: 'Planning',
+                      svgAssetPath: 'assets/icons/calendar.svg',
+                      iconColor: Colors.green,
+                    ),
+                  ],
                 ),
-                // const SizedBox(width: AppSizes.marginMedium),
-                InkWell(
-                  borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
-                  onTap: () {
-                    debugPrint('tapped');
-                  },
-                  child: Container(
-                    height: 140,
-                    width: MediaQuery.of(context).size.width * 0.275,
-                    padding: const EdgeInsets.all(AppSizes.gapMedium),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).hoverColor,
-                      border: Border.all(
-                        color: Theme.of(context).dividerColor.withOpacity(0.1),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Text(
+                      ' Group Prompts',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const Spacer(),
+                    CircleAvatar(
+                      backgroundColor: Colors.blue,
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.add),
                       ),
-                      borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.blue[50],
-                          child: SvgPicture.asset(
-                            'assets/icons/paper.svg',
-                            // ignore: deprecated_member_use
-                            color: Colors.blue,
-                          ),
+                    const SizedBox(width: 5.0),
+                    CircleAvatar(
+                      backgroundColor: Theme.of(context).disabledColor,
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: Theme.of(context).iconTheme.color,
                         ),
-                        const Spacer(),
-                        Text(
-                          'Content',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        Text(
-                          'Writing',
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-                // const SizedBox(width: AppSizes.marginMedium),
-                InkWell(
-                  borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
-                  onTap: () {
-                    debugPrint('tapped');
-                  },
-                  child: Container(
-                    height: 140,
-                    width: MediaQuery.of(context).size.width * 0.275,
-                    padding: const EdgeInsets.all(AppSizes.gapMedium),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).hoverColor,
-                      border: Border.all(
-                        color: Theme.of(context).dividerColor.withOpacity(0.1),
+                const SizedBox(height: AppSizes.gapMedium),
+                const TileCard(title: 'Work', subTitle: '20 chats'),
+                const SizedBox(height: AppSizes.gapSmall),
+                const TileCard(title: 'Product', subTitle: '9 chats'),
+                const SizedBox(height: AppSizes.gapSmall),
+                const TileCard(title: 'Content', subTitle: '10 chats'),
+                const SizedBox(height: AppSizes.gapMedium),
+                Row(
+                  children: [
+                    Text(
+                      'Last Prompts',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const Spacer(),
+                    CircleAvatar(
+                      backgroundColor: Theme.of(context).disabledColor,
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.green[50],
-                          child: SvgPicture.asset(
-                            'assets/icons/calendar.svg',
-                            // ignore: deprecated_member_use
-                            color: Colors.green,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          'Assignment',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        Text(
-                          'Planning',
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
               ],
             ),
@@ -186,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     elevation: WidgetStatePropertyAll(2.0),
                   ),
                   onPressed: () {
-                    // context.push('/permissions');
+                    context.push('/chat-screen');
                   },
                   child: const Text('Ask Me Anything'),
                 ),
@@ -195,18 +153,18 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      // floatingActionButton: Consumer<ThemeProvider>(
-      //   builder: (context, themeProvide, child) {
-      //     return Switch(
-      //       value: themeProvide.themeMode == ThemeMode.dark,
-      //       onChanged: (value) {
-      //         themeProvide.setThemeMode(
-      //           value ? ThemeMode.dark : ThemeMode.light,
-      //         );
-      //       },
-      //     );
-      //   },
-      // ),
+      floatingActionButton: Consumer<ThemeProvider>(
+        builder: (context, themeProvide, child) {
+          return Switch(
+            value: themeProvide.themeMode == ThemeMode.dark,
+            onChanged: (value) {
+              themeProvide.setThemeMode(
+                value ? ThemeMode.dark : ThemeMode.light,
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

@@ -40,6 +40,7 @@ dependencies:
   go_router: ^14.2.1
   dio: ^5.5.0+1
   flutter_svg: ^2.0.10+1
+  toastification: ^2.0.0
 
 dev_dependencies:
   flutter_test:
