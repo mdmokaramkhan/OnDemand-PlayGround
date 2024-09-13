@@ -1,6 +1,7 @@
 import 'package:chatbot/providers/auth_provider.dart';
 import 'package:chatbot/utils/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -41,13 +42,30 @@ class _LoginPageState extends State<LoginPage> {
             if (authProvider.isLoading)
               const CircularProgressIndicator()
             else
-              ElevatedButton(
-                onPressed: () {
-                  final username = _usernameController.text;
-                  final password = _passwordController.text;
-                  authProvider.login(username, password);
-                },
-                child: const Text('Login'),
+              Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      final username = _usernameController.text;
+                      final password = _passwordController.text;
+                      authProvider.login(username, password, context);
+                    },
+                    child: const Text('Login'),
+                  ),
+                  const SizedBox(height: AppSizes.gapMedium),
+                  SignInButton(
+                    Buttons.Google,
+                    onPressed: () {
+                      // authProvider.loginWithGoogle(context);
+                    },
+                  ),
+                  SignInButton(
+                    Buttons.GitHub,
+                    onPressed: () {
+                      // authProvider.loginWithGitHub(context);
+                    },
+                  ),
+                ],
               ),
             if (authProvider.errorMessage != null)
               Padding(
@@ -57,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                   style: const TextStyle(color: Colors.red),
                 ),
               ),
+              
           ],
         ),
       ),

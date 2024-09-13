@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'package:chatbot/providers/chat_provider.dart';
 import 'package:chatbot/utils/sizes.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({
@@ -16,24 +18,77 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  late TextEditingController messageController;
+
+  @override
+  void initState() {
+    super.initState();
+    messageController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    messageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final chatProvider = Provider.of<ChatProvider>(context);
-    final TextEditingController messageController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: true,
         backgroundColor: Theme.of(context).disabledColor,
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.textsms_sharp))],
+        actions: [
+          IconButton(
+            onPressed: () {
+              chatProvider.clearMessages();
+            },
+            icon: const Icon(Icons.clear_all_rounded),
+          ),
+        ],
       ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               itemCount: chatProvider.messages.length,
               itemBuilder: (context, index) {
                 final message = chatProvider.messages[index];
+
+                // Display spinner for loading state
+                if (index == chatProvider.messages.length - 1 &&
+                    message.text == '...') {
+                  return ListTile(
+                    title: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SpinKitThreeBounce(
+                              color: Colors.grey,
+                              size: 18.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                // Display Markdown content
                 return Align(
                   alignment: message.isSentByMe
                       ? Alignment.centerRight
@@ -41,18 +96,32 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 15,
+                      margin: EdgeInsets.only(
+                        left: message.isSentByMe ? 25 : 0,
+                        right: message.isSentByMe ? 0 : 25,
                       ),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: message.isSentByMe ? Colors.blue : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
+                        color: message.isSentByMe
+                            ? Colors.blue[900]
+                            : Colors.grey[300],
+                        borderRadius:
+                            BorderRadius.circular(AppSizes.radiusLarge),
                       ),
-                      child: Text(
-                        message.text,
-                        style: TextStyle(
-                          color: message.isSentByMe ? Colors.white : Colors.black,
+                      child: MarkdownBody(
+                        data: message.text,
+                        styleSheet: MarkdownStyleSheet(
+                          p: TextStyle(
+                            color: message.isSentByMe
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                          code: TextStyle(
+                            color: message.isSentByMe
+                                ? Colors.white
+                                : Colors.black,
+                            fontFamily: 'Courier',
+                          ),
                         ),
                       ),
                     ),
@@ -88,7 +157,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       chatProvider.addMessage(
                         Message(
                           text: messageText,
-                          isSentByMe: true, // For simplicity, we assume
+                          isSentByMe: true,
                         ),
                       );
                       messageController.clear();

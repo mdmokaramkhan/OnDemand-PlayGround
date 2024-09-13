@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -10,7 +11,8 @@ class AuthProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  Future<void> login(String username, String password, BuildContext context) async {
+  Future<void> login(
+      String username, String password, BuildContext context) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -26,13 +28,12 @@ class AuthProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         // Handle successful login, e.g., save token, navigate to the next screen
-        if(response.data['msg'] == 'Logged in Successfully'){
+        if (response.data['msg'] == 'Logged in Successfully') {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setString('email', username);
           pref.setString('password', password);
           pref.setBool('isLogged', true);
-          context.push('/chat-screen');
-          
+          if (context.mounted) context.push('/home');
         } else {
           _errorMessage = response.data['msg'];
         }
@@ -46,4 +47,13 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> logout({required BuildContext context}) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.remove('email');
+    preferences.remove('password');
+    preferences.remove('isLogged');
+    if (context.mounted) context.go('/sign-in');
+  }
+
 }

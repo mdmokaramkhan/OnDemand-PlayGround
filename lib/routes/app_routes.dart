@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 GoRouter appRouter(bool isLoggedIn) {
   return GoRouter(
-    initialLocation: '/log-in',
+    initialLocation: isLoggedIn ? '/home' : '/log-in',
     routes: [
       GoRoute(
         path: '/log-in',

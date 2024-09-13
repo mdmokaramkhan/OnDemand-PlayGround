@@ -3,7 +3,6 @@ import 'package:chatbot/utils/constants.dart';
 import 'package:chatbot/utils/sizes.dart';
 import 'package:chatbot/widgets/cards.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -31,15 +30,19 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         titleSpacing: 0,
         title: Text(widget.title),
+        centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: SvgPicture.asset(
-              'assets/icons/menu.svg',
-              height: 32,
-              // ignore: deprecated_member_use
-              color: Theme.of(context).textTheme.titleLarge!.color,
-            ),
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvide, child) {
+              return Switch(
+                value: themeProvide.themeMode == ThemeMode.dark,
+                onChanged: (value) {
+                  themeProvide.setThemeMode(
+                    value ? ThemeMode.dark : ThemeMode.light,
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
