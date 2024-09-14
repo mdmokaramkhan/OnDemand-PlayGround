@@ -19,7 +19,12 @@ GoRouter appRouter(bool isLoggedIn) {
       ),
       GoRoute(
         path: '/chat-screen',
-        builder: (context, state) => const ChatScreen(title: 'New Chat'),
+        name: '/chat-screen',
+        builder: (context, state) => ChatScreen(
+          title: state.uri.queryParameters['title'],
+          icon: state.uri.queryParameters['icon'],
+          desc: state.uri.queryParameters['desc'],
+        ),
       ),
     ],
   );

@@ -14,13 +14,15 @@ class ChatProvider with ChangeNotifier {
   final List<Message> _messages = [];
   final Dio _dio = Dio();
   bool _isLoading = false;
+  List<String> _suggestions = [];
 
   List<Message> get messages => _messages;
   bool get isLoading => _isLoading;
+  List<String> get suggestions => _suggestions;
 
   Future<void> addMessage(Message message) async {
     _messages.add(message);
-    _messages.add(Message(text: '...', isSentByMe: false)); // Placeholder for loading state
+    _messages.add(Message(text: '...', isSentByMe: false));
     notifyListeners();
 
     // Prepare the request data
@@ -32,28 +34,23 @@ class ChatProvider with ChangeNotifier {
     try {
       _isLoading = true;
 
-      // Make a POST request to the server
       final response = await _dio.post(
         'https://api-demo-bice.vercel.app/api/home',
         data: requestData,
       );
 
-      // Check if the response is successful and contains data
       if (response.statusCode == 200 && response.data != null) {
         var data = jsonDecode(response.data);
-        String serverResponse = data['data']['answer'].toString(); // Modify based on actual response structure
+        String serverResponse = data['data']['answer'].toString();
+        _suggestions = List<String>.from(data['suggestion'] ?? []);
 
-        // Remove the loading message and add the server response
-        print(serverResponse);
         _messages.removeLast();
         _messages.add(Message(text: serverResponse, isSentByMe: false));
       } else {
-        // Remove the loading message and add an error message
         _messages.removeLast();
         _messages.add(Message(text: 'Failed to get response from server', isSentByMe: false));
       }
     } catch (e) {
-      // Remove the loading message and add an error message
       _messages.removeLast();
       _messages.add(Message(text: 'Error: ${e.toString()}', isSentByMe: false));
     } finally {
@@ -64,6 +61,7 @@ class ChatProvider with ChangeNotifier {
 
   void clearMessages() {
     _messages.clear();
+    _suggestions.clear();
     notifyListeners();
   }
 }

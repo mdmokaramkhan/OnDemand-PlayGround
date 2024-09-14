@@ -9,9 +9,13 @@ class ChatScreen extends StatefulWidget {
   const ChatScreen({
     super.key,
     required this.title,
+    required this.icon,
+    required this.desc,
   });
 
-  final String title;
+  final String? title;
+  final String? icon;
+  final String? desc;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -19,6 +23,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   late TextEditingController messageController;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -29,16 +34,33 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     messageController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
+
+  // void _copyToClipboard(String text) {
+  //   Clipboard.setData(ClipboardData(text: text)).then((_) {
+  //     // ignore: use_build_context_synchronously
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Copied to clipboard')),
+  //     );
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     final chatProvider = Provider.of<ChatProvider>(context);
 
+    // Scroll to the bottom when messages change
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title ?? 'New Chat'),
         centerTitle: true,
         backgroundColor: Theme.of(context).disabledColor,
         actions: [
@@ -54,6 +76,7 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: ListView.builder(
+              controller: _scrollController,
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               itemCount: chatProvider.messages.length,
               itemBuilder: (context, index) {
@@ -74,11 +97,11 @@ class _ChatScreenState extends State<ChatScreen> {
                           color: Colors.grey[300],
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             SpinKitThreeBounce(
-                              color: Colors.grey,
+                              color: Theme.of(context).primaryColor,
                               size: 18.0,
                             ),
                           ],
@@ -95,41 +118,83 @@ class _ChatScreenState extends State<ChatScreen> {
                       : Alignment.centerLeft,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      margin: EdgeInsets.only(
-                        left: message.isSentByMe ? 25 : 0,
-                        right: message.isSentByMe ? 0 : 25,
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: message.isSentByMe
-                            ? Colors.blue[900]
-                            : Colors.grey[300],
-                        borderRadius:
-                            BorderRadius.circular(AppSizes.radiusLarge),
-                      ),
-                      child: MarkdownBody(
-                        data: message.text,
-                        styleSheet: MarkdownStyleSheet(
-                          p: TextStyle(
-                            color: message.isSentByMe
-                                ? Colors.white
-                                : Colors.black,
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(
+                            left: message.isSentByMe ? 25 : 0,
+                            right: message.isSentByMe ? 0 : 25,
                           ),
-                          code: TextStyle(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
                             color: message.isSentByMe
-                                ? Colors.white
-                                : Colors.black,
-                            fontFamily: 'Courier',
+                                ? Colors.blue[900]
+                                : Colors.grey[300],
+                            borderRadius:
+                                BorderRadius.circular(AppSizes.radiusLarge),
+                          ),
+                          child: MarkdownBody(
+                            selectable: true,
+                            data: message.text,
+                            styleSheet: MarkdownStyleSheet(
+                              p: TextStyle(
+                                color: message.isSentByMe
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                              code: TextStyle(
+                                color: message.isSentByMe
+                                    ? Colors.white
+                                    : Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .color,
+                                fontFamily: 'Courier',
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        // const SizedBox(height: 2),
+                        // if (!message.isSentByMe) // Show copy button only for received messages
+                        //   Align(
+                        //     alignment: Alignment.bottomLeft,
+                        //     child: IconButton(
+                        //       icon: Icon(Icons.copy, color: Colors.grey[700]),
+                        //       onPressed: () => _copyToClipboard(message.text),
+                        //     ),
+                        //   ),
+                      ],
                     ),
                   ),
                 );
               },
             ),
           ),
+          // Suggestions Chips
+          if (chatProvider.suggestions.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: chatProvider.suggestions.map((suggestion) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: ChoiceChip(
+                        label: Text(suggestion),
+                        selected: false,
+                        onSelected: (selected) {
+                          if (selected) {
+                            messageController.text = suggestion;
+                          }
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
           Container(
             margin: const EdgeInsets.all(AppSizes.marginMedium),
             padding: const EdgeInsets.all(AppSizes.marginSmall),

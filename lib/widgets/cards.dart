@@ -47,20 +47,20 @@ class FeatureCard extends StatelessWidget {
     required this.title,
     required this.svgAssetPath,
     required this.iconColor,
+    required this.onTap,
   });
 
   final String title;
   final String desc;
   final String svgAssetPath;
   final Color? iconColor;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
-      onTap: () {
-        showSuccessToast(context: context, tittle: 'Here');
-      },
+      onTap: onTap,
       child: Container(
         height: 140,
         width: MediaQuery.of(context).size.width * 0.275,

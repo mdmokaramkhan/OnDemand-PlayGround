@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(AppSizes.paddingLarge),
             child: Column(
               children: [
-                const Wrap(
+                Wrap(
                   runSpacing: 10,
                   spacing: 10,
                   alignment: WrapAlignment.spaceEvenly,
@@ -63,18 +63,42 @@ class _MyHomePageState extends State<MyHomePage> {
                       title: 'Coding',
                       svgAssetPath: 'assets/icons/code.svg',
                       iconColor: Colors.deepOrange,
+                      onTap: () => context.pushNamed(
+                        '/chat-screen',
+                        queryParameters: {
+                          'title': 'Coding',
+                          'icon': 'assets/icons/code.svg',
+                          'desc': 'Porgram',
+                        },
+                      ),
                     ),
                     FeatureCard(
                       desc: 'Content',
                       title: 'Writing',
                       svgAssetPath: 'assets/icons/paper.svg',
                       iconColor: Colors.blue,
+                      onTap: () => context.pushNamed(
+                        '/chat-screen',
+                        queryParameters: {
+                          'title': 'Writing',
+                          'icon': 'assets/icons/paper.svg',
+                          'desc': 'Content',
+                        },
+                      ),
                     ),
                     FeatureCard(
                       desc: 'Assignment',
                       title: 'Planning',
                       svgAssetPath: 'assets/icons/calendar.svg',
                       iconColor: Colors.green,
+                      onTap: () => context.pushNamed(
+                        '/chat-screen',
+                        queryParameters: {
+                          'title': 'Planning',
+                          'icon': 'assets/icons/calendar.svg',
+                          'desc': 'Assignment',
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -156,18 +180,18 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      floatingActionButton: Consumer<ThemeProvider>(
-        builder: (context, themeProvide, child) {
-          return Switch(
-            value: themeProvide.themeMode == ThemeMode.dark,
-            onChanged: (value) {
-              themeProvide.setThemeMode(
-                value ? ThemeMode.dark : ThemeMode.light,
-              );
-            },
-          );
-        },
-      ),
+      // floatingActionButton: Consumer<ThemeProvider>(
+      //   builder: (context, themeProvide, child) {
+      //     return Switch(
+      //       value: themeProvide.themeMode == ThemeMode.dark,
+      //       onChanged: (value) {
+      //         themeProvide.setThemeMode(
+      //           value ? ThemeMode.dark : ThemeMode.light,
+      //         );
+      //       },
+      //     );
+      //   },
+      // ),
     );
   }
 }
