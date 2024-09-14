@@ -1,5 +1,6 @@
 import 'package:chatbot/providers/auth_provider.dart';
 import 'package:chatbot/providers/chat_provider.dart';
+import 'package:chatbot/providers/home_provider.dart';
 import 'package:chatbot/providers/theme_provider.dart';
 import 'package:chatbot/routes/app_routes.dart';
 import 'package:chatbot/theme/app_theme.dart';
@@ -41,6 +42,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider(widget.prefs)),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
       ],
       child: Consumer<ThemeProvider>(

@@ -11,11 +11,13 @@ class ChatScreen extends StatefulWidget {
     required this.title,
     required this.icon,
     required this.desc,
+    required this.agentIds,
   });
 
   final String? title;
   final String? icon;
   final String? desc;
+  final List<String>? agentIds;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -174,7 +176,7 @@ class _ChatScreenState extends State<ChatScreen> {
           if (chatProvider.suggestions.isNotEmpty)
             Container(
               padding: const EdgeInsets.all(8.0),
-              color: Colors.grey[200],
+              color: Theme.of(context).disabledColor,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -224,6 +226,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           text: messageText,
                           isSentByMe: true,
                         ),
+                        widget.agentIds,
                       );
                       messageController.clear();
                     }

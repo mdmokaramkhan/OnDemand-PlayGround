@@ -1,40 +1,48 @@
 import 'package:chatbot/utils/sizes.dart';
-import 'package:chatbot/widgets/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 class TileCard extends StatelessWidget {
-  const TileCard({
-    super.key,
-    required this.title,
-    required this.subTitle,
-  });
+  const TileCard({super.key, required this.title, required this.subTitle});
 
   final String title;
   final String subTitle;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSizes.gapMedium,
-        vertical: AppSizes.gapMedium,
+    return InkWell(
+      borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
+      onTap: () => context.pushNamed(
+        '/chat-screen',
+        queryParameters: {
+          'title': title,
+          'icon': 'assets/icons/code.svg',
+          'desc': title,
+        },
       ),
-      decoration: BoxDecoration(
-        color: Theme.of(context).hoverColor,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: Theme.of(context).disabledColor,
-            child: SvgPicture.asset('assets/icons/code.svg'),
-          ),
-          const SizedBox(width: AppSizes.gapSmall),
-          Text(title, style: Theme.of(context).textTheme.titleSmall),
-          const Spacer(),
-          Text(subTitle, style: Theme.of(context).textTheme.bodySmall),
-        ],
+      child: Container(
+        margin: const EdgeInsets.only(top: 8.0),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSizes.gapMedium,
+          vertical: AppSizes.gapMedium,
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).hoverColor,
+          borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Theme.of(context).disabledColor,
+              child: SvgPicture.asset('assets/icons/group.svg'),
+            ),
+            const SizedBox(width: AppSizes.gapSmall),
+            Text(title, style: Theme.of(context).textTheme.titleSmall),
+            const Spacer(),
+            Text(subTitle, style: Theme.of(context).textTheme.bodySmall),
+          ],
+        ),
       ),
     );
   }

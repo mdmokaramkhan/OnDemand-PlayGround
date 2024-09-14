@@ -20,14 +20,14 @@ class ChatProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   List<String> get suggestions => _suggestions;
 
-  Future<void> addMessage(Message message) async {
+  Future<void> addMessage(Message message, List<String>? agentIds) async {
     _messages.add(message);
     _messages.add(Message(text: '...', isSentByMe: false));
     notifyListeners();
 
     // Prepare the request data
     final requestData = {
-      "plugid": ["plugin-1712327325", "plugin-1713962163"],
+      "plugid": agentIds,
       "query": message.text
     };
 

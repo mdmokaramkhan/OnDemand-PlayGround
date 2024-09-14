@@ -20,11 +20,16 @@ GoRouter appRouter(bool isLoggedIn) {
       GoRoute(
         path: '/chat-screen',
         name: '/chat-screen',
-        builder: (context, state) => ChatScreen(
-          title: state.uri.queryParameters['title'],
-          icon: state.uri.queryParameters['icon'],
-          desc: state.uri.queryParameters['desc'],
-        ),
+        builder: (context, state) {
+          final String? agentIdsParam = state.uri.queryParameters['agentIds'];
+          final List<String>? agentIds = agentIdsParam?.split(',');
+          return ChatScreen(
+            title: state.uri.queryParameters['title'],
+            icon: state.uri.queryParameters['icon'],
+            desc: state.uri.queryParameters['desc'],
+            agentIds: agentIds,
+          );
+        },
       ),
     ],
   );
